@@ -1,4 +1,4 @@
-Jenkins 1.535 and above is built with an internal web container called Jetty.
+- Jenkins 1.535 and above is built with an internal web container called Jetty.
 
 - How to restart Jenkins manually?
 To restart Jenkins via url, you can use either of the following commands:
