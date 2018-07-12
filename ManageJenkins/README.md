@@ -1,6 +1,6 @@
 Jenkins 1.535 and above is built with an internal web container called Jetty.
 
-*How to restart Jenkins manually?
+- How to restart Jenkins manually?
 To restart Jenkins via url, you can use either of the following commands:
 (jenkins_url)/safeRestart - Allows all running jobs to complete. New jobs will remain in the queue to run after the restart is complete.
 (jenkins_url)/restart - Forces a restart without waiting for builds to complete.
