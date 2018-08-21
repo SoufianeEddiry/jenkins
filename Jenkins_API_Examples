@@ -1,0 +1,13 @@
+Trigger a build:
+curl -X POST http://10.150.18.229:8080/jenkins/view/DevOps/job/MyJob/build --user <USER_NAME>:<TOKEN>
+
+Retrieve a project config.xml file:
+curl  http://10.150.18.229:8080/jenkins/view/DevOps/job/MyJob/config.xml --user <USER_NAME>:<TOKEN> 
+
+Disable a project:
+curl -X POST  http://10.150.18.229:8080/jenkins/view/DevOps/job/MyJob/disable --user <USER_NAME>:<TOKEN> 
+
+Enable  a project:
+curl -X POST  http://10.150.18.229:8080/jenkins/view/DevOps/job/MyJob/enable --user <USER_NAME>:<TOKEN> 
+
+*TOKEN - Manage Jenkins ->Manage Users -> click on the users configure button->API Token

@@ -1,0 +1,118 @@
+Certified Jenkins Engineer (CJE)
+================================
+1. Key CI/CD/Jenkins concepts: Continuous Delivery/Continuous Integration Concepts
+	Define continuous integration, continuous delivery, continuous deployment
+		Countinues Delivery - means that code can be released at any time.
+		Countinues Deployment - means code is released continuously as a  part of an automated pipeline.
+		Continuous Integration – practice of integrating the code continuously/every checkin.
+	Stages of CI and CD
+		Build(Checkout,Compile,Unit Test,Package), Deploy, and Test 
+	What are jobs in Jenkins?
+		Types of jobs - Freestyle, Maven, Pipeline, External Job, Multi Configuratio, Multi Job, Folder, MultiBranch Pipeline 
+		Scope of jobs
+	Builds
+		What are builds in Jenkins?
+			Result of a job(Can be scoped to any typical IT task, defined in Jenkins)
+		What are build steps, triggers, artifacts, and repositories?
+			Build steps- a single operation within a build
+			triggers- something that starts a build (periodically{cron}, Poll SCM, Build after other projects are built,GitHub hook trigger , etc)
+			artifacts- Output of a passed build(jar,zip,tar,...)
+			repositories- SCM(Source Code Management)/VC(version Control): git,svn
+		Build tools configuration
+			Manage Jenkins -> Global Tool Configuration : here you can set build tool(mvn/ant/sbt/jdk) configuration	
+	Source
+		What are source code management systems and how are they used?
+			SCM(Source Code Management)/VC(version Control): git,svn
+			which are used to track your code changes.
+		Cloud-based SCMs
+			Github
+			Bitbucket
+			AWS Code Commit
+		Jenkins changelogs
+			Contains data about a change in a SCM
+		Incremental updates v clean check out
+			Incremental updates: Instead of deleting and re-cloning a project repository into a workspace,it just pulling any changes alone.
+			clean check out: Clean the jobs workspace and re-cloning a project repository. 
+		Checking in code
+		Infrastructure-as-Code
+			 infrastructure from manual tasks to code,
+		Branch and Merge Strategies
+			master- latest Stable code.
+			Development- enables isolation and concurrent development.
+			Feature- Feature isolation is a special derivation of the development isolation
+			Release
+	Testing
+		Benefits of testing with Jenkins
+			Testing every build result findout the defects/issues ASAP.
+		Define unit test, smoke test, acceptance test, automated verification/functional tests
+			unit test- It tests a small piece of functionality, usually at the class method level.
+			smoke test-  aim at ensuring that the most important functions work.
+			acceptance test- It tests against the product specifications.
+			functional tests- It tests the functionality of the project as a whole .
+	Notifications
+		Types of notifications in Jenkins
+			email
+			slack
+			hipchat
+		Importance of notifications
+			Result in fixing/identify the broken code faster.
+	Distributed Builds
+		What are distributed builds?
+			Executing build on slave nodes.
+			When you want to preserve resources on the master node you use distributed builds.
+		Functions of masters and agents
+			Master where you main jenkins server is running.
+			Slave machine are used to execute jenkins jobs.
+	Plugins
+		What are plugins?
+			Plugins can really be used to add any functionality to Jenkins.
+		What is the plugin manager?
+			plugin manager- help to manage jenkins plugin{install, uninstall, upgrade, downgrad or search plugins}
+			Dashboard Left Panel -> Manage Jenkins -> Manage Plugins
+	Jenkins Rest API
+		How to interact with it
+			Using:XML , JSON with JSONP support, Python
+		What can you do with it?
+			Retrieve information from Jenkins for programmatic consumption.
+			Trigger a new build
+			Create/copy jobs
+		Why use it?
+			you can get info programmatic way.
+	Security
+		Authentication versus authorization
+			Authentication identifies a user.
+			Authorization dictates what a user is allowed to do.
+		Matrix security
+			Jenkins permissions are defined in a matrix-like structure, in which the administrator can set security based on a user or user group.
+			Major categories: overall, Credentials, Agent, Job, Run, View and SCM
+		Definition of auditing, credentials, and other key security concepts
+			auditing: Tracking who did what on your Jenkins server.
+			credentials: to authenticate user.
+	Fingerprints
+		What are fingerprints?
+			Fingerprints are an md5sum that is used to track artifacts.
+		How do fingerprints work?
+			Jenkins maintains a database of md5sum, and for each md5sum, Jenkins records which builds of which projects used. This database is updated every time a build runs and files are fingerprinted.
+	Artifacts
+		How to use artifacts in Jenkins
+			ArchiveArtifacts can be used to set an archiving strategy for a project in a Jenkinsfile.
+		Storing artifacts
+			you can archive it and store in nexus.
+	Using 3rd party tools
+		How to use 3rd party tools
+			you can install the repective plugin and configure it by Manage Jenkins -> Global Tool Configuration
+		Installation Wizard
+			What is the Jenkins Installation Wizard?
+				You can install via repos/docker or running jenkins jar using java
+		How to use the Wizard?
+		Which configurations are covered by the Installation Wizard?
+2.Jenkins usage
+	Jobs
+		Organizing jobs in Jenkins
+			Projects can be organized in either Folders or Views.
+		Parameterized jobs
+			To pass values while running a project
+		Usage of Freestyle/Pipeline/Matrix jobs
+	
+3. Building Continuous Delivery (CD) Pipelines
+4. CD-as-code best practices
