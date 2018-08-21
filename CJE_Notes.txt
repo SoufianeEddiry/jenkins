@@ -111,8 +111,103 @@ Certified Jenkins Engineer (CJE)
 		Organizing jobs in Jenkins
 			Projects can be organized in either Folders or Views.
 		Parameterized jobs
-			To pass values while running a project
+			To pass values while running a project.
+			using Parameterized Trigger Plugin you can trigger another job aswell.
 		Usage of Freestyle/Pipeline/Matrix jobs
-	
+			Freestyle- General-purpose build jobs, which provides a maximum of flexibility.
+			Pipeline- Building Continuous Delivery pipelines through either a Web UI or a scripted(in Groovy) Jenkinsfile.
+			Matrix/Multi Job
+				When to use it
+					If you'd like to stop the mess with downstream / upstream jobs chains definitions
+					When you want to add full hierarchy of Jenkins jobs that will be executed in sequence or in parallel
+					Add context to your buildflow implementing parameter inheritance from the MultiJob to all its Phases and Jobs. Phases are sequential, whilst jobs inside each Phase are parallel.
+	Builds
+		Setting up build steps and triggers
+			Steps- Execute Shell, Invoke Ant, Build using SBT, Start/Stop Docker,Execute SonarScanner, etc.
+			Triggers- periodically{cron}, Poll SCM, Build after other projects are built,GitHub hook trigger , etc
+		Configuring build tools.
+			Manage Jenkins -> Global Tool Configuration
+		Running scripts as part of build steps
+			Can run Shell/Batch scripts or Groovy script
+			Groovy scripts can run as system or user level. System has access to Jenkins object model
+	Source Code Management
+		Polling source code management
+			
+		Creating hooks
+			- Enable "Poll SCM" option and  leave "Schedule" empty
+			- In Github, go to your repo Settings -> Integrations & services->  Add a service -> add service "Jenkins (Git plugin)"
+				Jenkins URL: https://(jenkins_master):8080
+			-Now when you do a git push, it will automatically kick off the build in jenkins
+			*Another way of doing it, using the trigger "GitHub hook trigger for GITScm polling" and in Github, add service called "Jenkins (GitHub plugin)"
+			Add Jenkins hook url: http://(jenkins_master):8080/github-webhook/
+			Test service button in Github services section is useful
+		Including version control tags and version information
+			Git allows you to create a tag for every build eg: git tag -a v1.4 -m "my version 1.4"
+			Version Number plugin lets you include info in build name
+		Testing
+			Testing for code coverage
+				code coverage test? It tests how well your code is tested.
+				Cobertura and JaCoCo are most common coverage tools used for JAVA and SBT projects.
+			Test reports in Jenkins
+				Publish JUnit or TestNG reports
+				In a JUnit report, if we set the “Health report amplification factor” to 3 and there’s a 10% failure, then health Score is 70%.
+					{You would take 100% then subtract (10%*3), thus 70%.}
+				How do you configure a junit report in a Pipeline? junit “path to xml file”
+			Displaying test results
+			Integrating with test automation tools
+			Breaking builds
+				Based on unit test result we will be able to mark build as success or failure
+		Notifications
+			Setup and usage
+				when can trigger notifications after post build action.
+			Email notifications, instant messaging
+				Email ext :lets you customize the message and tailor the recipients per trigger
+				Sample pipeline:
+					post {
+						failure {
+							emailext(
+								subject: "${env.JOB_NAME [${env.BUILD_NUMBER}] Failed!",
+								body: "<html> build Failed</html>",
+								to: "admin@domain.com" )
+							}
+						}
+					}
+				Jabber and IRC for instant messaging
+			Alarming on notifications
+				Extreme notifications can have a video or audio cue in the real world
+		Distributed Builds
+			Setting up and running builds in parallel
+				-Use Matrix/Multi Job Configuration 
+				-Build Flow Plugin
+			Setting up and using SSH agents, JNLP agents, cloud agents
+				 Manage Jenkins->  Manage Nodes-> New Node ->Node Name 
+					Then you can configure Launch Method SSH agents/ JNLP agents
+			Monitoring nodes
+				-Install Groovy plugin
+				 Setup a freestyle project to Execute System Groovy Script
+					int exitcode = 0
+						for (slave in hudson.model.Hudson.instance.slaves) {
+						 if (slave.getComputer().isOffline().toString() == "true"){
+						 println('Slave ' + slave.name + " is offline!"); 
+						 exitcode++;
+						 }
+						}
+
+						if (exitcode > 0){
+						 println("We have a Slave down, failing the build!");
+						 return 1;
+						}
+				- You can use "Monitor and Restart Offline Slaves" plugin: to monitor and restart offline nodes if they are not disconnected manually.
+		Plugins
+			Setting up and using Plugin Manager
+				Dashboard Left Panel -> Manage Jenkins -> Manage Plugins
+				you can install plugin via CLI and the Plugin Manager
+			Finding and configuring required plugins
+				Updates tab – for upgrading plugin already installed
+				Available tab – for downloading available plugin which are not installed.
+				Advanced tab – for uploading plugin hpi/jpi file from local.
+
+
+
 3. Building Continuous Delivery (CD) Pipelines
 4. CD-as-code best practices
