@@ -144,124 +144,196 @@ Certified Jenkins Engineer (CJE)
 		Including version control tags and version information
 			Git allows you to create a tag for every build eg: git tag -a v1.4 -m "my version 1.4"
 			Version Number plugin lets you include info in build name
-		Testing
-			Testing for code coverage
-				code coverage test? It tests how well your code is tested.
-				Cobertura and JaCoCo are most common coverage tools used for JAVA and SBT projects.
-			Test reports in Jenkins
-				Publish JUnit or TestNG reports
-				In a JUnit report, if we set the “Health report amplification factor” to 3 and there’s a 10% failure, then health Score is 70%.
-					{You would take 100% then subtract (10%*3), thus 70%.}
-				How do you configure a junit report in a Pipeline? junit “path to xml file”
-			Displaying test results
-			Integrating with test automation tools
-			Breaking builds
-				Based on unit test result we will be able to mark build as success or failure
-		Notifications
-			Setup and usage
-				when can trigger notifications after post build action.
-			Email notifications, instant messaging
-				Email ext :lets you customize the message and tailor the recipients per trigger
-				Sample pipeline:
-					post {
-						failure {
-							emailext(
-								subject: "${env.JOB_NAME [${env.BUILD_NUMBER}] Failed!",
-								body: "<html> build Failed</html>",
-								to: "admin@domain.com" )
-							}
+	Testing
+		Testing for code coverage
+			code coverage test? It tests how well your code is tested.
+			Cobertura and JaCoCo are most common coverage tools used for JAVA and SBT projects.
+		Test reports in Jenkins
+			Publish JUnit or TestNG reports
+			In a JUnit report, if we set the “Health report amplification factor” to 3 and there’s a 10% failure, then health Score is 70%.
+				{You would take 100% then subtract (10%*3), thus 70%.}
+			How do you configure a junit report in a Pipeline? junit “path to xml file”
+		Displaying test results
+		Integrating with test automation tools
+		Breaking builds
+			Based on unit test result we will be able to mark build as success or failure
+	Notifications
+		Setup and usage
+			when can trigger notifications after post build action.
+		Email notifications, instant messaging
+			Email ext :lets you customize the message and tailor the recipients per trigger
+			Sample pipeline:
+				post {
+					failure {
+						emailext(
+							subject: "${env.JOB_NAME [${env.BUILD_NUMBER}] Failed!",
+							body: "<html> build Failed</html>",
+							to: "admin@domain.com" )
 						}
 					}
-				Jabber and IRC for instant messaging
-			Alarming on notifications
-				Extreme notifications can have a video or audio cue in the real world
-		Distributed Builds
-			Setting up and running builds in parallel
-				-Use Matrix/Multi Job Configuration 
-				-Build Flow Plugin
-				-Pipeline
-					node {
-						  git "git@github.com..."
-						  parallel (
-						   phase1: { sh "echo p1; sleep 20s; echo phase1" },
-						   phase2: { sh "echo p2; sleep 40s; echo phase2" }
-					      )
-					     sh "run this after both phases complete"   
-						}
-			Setting up and using SSH agents, JNLP agents, cloud agents
-				 Manage Jenkins->  Manage Nodes-> New Node ->Node Name 
-					Then you can configure Launch Method SSH agents/ JNLP agents
-			Monitoring nodes
-				-Install Groovy plugin
-				 Setup a freestyle project to Execute System Groovy Script
-					int exitcode = 0
-						for (slave in hudson.model.Hudson.instance.slaves) {
-						 if (slave.getComputer().isOffline().toString() == "true"){
-						 println('Slave ' + slave.name + " is offline!"); 
-						 exitcode++;
-						 }
-						}
-
-						if (exitcode > 0){
-						 println("We have a Slave down, failing the build!");
-						 return 1;
-						}
-				- You can use "Monitor and Restart Offline Slaves" plugin: to monitor and restart offline nodes if they are not disconnected manually.
-		Plugins
-			Setting up and using Plugin Manager
-				Dashboard Left Panel -> Manage Jenkins -> Manage Plugins
-				you can install plugin via CLI and the Plugin Manager
-			Finding and configuring required plugins
-				Updates tab – for upgrading plugin already installed
-				Available tab – for downloading available plugin which are not installed.
-				Advanced tab – for uploading plugin hpi/jpi file from local.
-		Jenkins Rest API
-			Using REST API to trigger jobs remotely, access job status, create/delete jobs
-			Trigger a build: curl -X POST http://10.150.18.229:8080/jenkins/view/DevOps/job/MyJob/build --user <USER_NAME>:<TOKEN>
-			Retrieve a Job config.xml file: curl  http://10.150.18.229:8080/jenkins/view/DevOps/job/MyJob/config.xml --user <USER_NAME>:<TOKEN> 
-			Disable a Job: curl -X POST  http://10.150.18.229:8080/jenkins/view/DevOps/job/MyJob/disable --user <USER_NAME>:<TOKEN> 
-			Enable a Job: curl -X POST  http://10.150.18.229:8080/jenkins/view/DevOps/job/MyJob/enable --user <USER_NAME>:<TOKEN> 
-			Delete a Job : curl -X POST  http://10.150.18.229:8080/jenkins/view/DevOps/job/MyJob/doDelete --user <USER_NAME>:<TOKEN>  
-			Create a new Job:curl -s -XPOST 'http://10.150.18.229:8080/createItem?name=yourJobName' --user <USER_NAME>:<TOKEN> --data-binary @config.xml -H "Content-Type:text/xml"
-			Check if job exists:curl -XGET 'http://jenkins/checkJobName?value=yourJobFolderName' --user <USER_NAME>:<TOKEN>
-			*TOKEN - Manage Jenkins ->Manage Users -> click on the users configure button->API Token
-		Security
-			Setting up and using security realms
-				Manage Jenkins -> Configure Global Security
-				- Jenkins own user database
-				- LDAP
-				- Active Directory
-			User database, project security, Matrix security
-				People link shows user list + committers
-				Matrix based security – control privileges granularly using user ids/groups
-				Project based matrix authorization security – Matrix based + set privileges on job configuration page as well
-				Role based matrix authorization security – Manage Roles to control permissions by group. Adds groups/roles tabs to projects
-			Setting up and using auditing
-				Logs- Manage Jenkins -> System Log -> All Jenkins Logs
-				Job Configuration History plugin – for job config history.
-				Audit Trail plugin –This plugin adds an Audit Trail section in the main Jenkins configuration page.
-			Setting up and using credentials
-				Credentials plugin - provides a centralized way to define credentials that can be used by your Jenkins instance, plugins and build jobs.
-				Credentials Binding plugin - allows you to configure your build jobs to inject credentials as environment variables.
-				Global credentials-Credentials that should be available irrespective of domain specification to requirements matching.
-				Credentials -> System ->Add domain
-		Fingerprints
-			Fingerprinting jobs shared or copied between jobs
-			Fingerprint -plugin to Adds the ability to fingerprint files as build steps.
-				$JENKINS_HOME/fingerprints -> where md5sum values are stored.
-		Artifacts
-			Copying artifacts
-				Copy Artifact: plugin Adds a build step to copy artifacts from another project.
-				job -> configure -> Build : Copy artifacts from another project
-			Using artifacts in Jenkins
-				job -> configure -> Post Build Action: archive artifacts
-			Artifact retention policy
-				By default, kept same length of time as build is there.
-				job -> configure -> [x]Discard old builds -> Advanced: set a value for howmany artifacts "Max # of builds to keep with artifacts"	
-		Alerts
-			Making basic updates to jobs and build scripts
-			Troubleshooting specific problems from build and test failure alerts
-				We can use plugin "email-ext" for alerts
+				}
+			Jabber and IRC for instant messaging
+		Alarming on notifications
+			Extreme notifications can have a video or audio cue in the real world
+	Distributed Builds
+		Setting up and running builds in parallel
+			-Use Matrix/Multi Job Configuration 
+			-Build Flow Plugin
+			-Pipeline
+				node {
+					  git "git@github.com..."
+					  parallel (
+					   phase1: { sh "echo p1; sleep 20s; echo phase1" },
+					   phase2: { sh "echo p2; sleep 40s; echo phase2" }
+				      )
+				     sh "run this after both phases complete"   
+					}
+		Setting up and using SSH agents, JNLP agents, cloud agents
+			 Manage Jenkins->  Manage Nodes-> New Node ->Node Name 
+				Then you can configure Launch Method SSH agents/ JNLP agents
+		Monitoring nodes
+			-Install Groovy plugin
+			 Setup a freestyle project to Execute System Groovy Script
+				int exitcode = 0
+					for (slave in hudson.model.Hudson.instance.slaves) {
+					 if (slave.getComputer().isOffline().toString() == "true"){
+					 println('Slave ' + slave.name + " is offline!"); 
+					 exitcode++;
+					 }
+					}
+					if (exitcode > 0){
+					 println("We have a Slave down, failing the build!");
+					 return 1;
+					}
+			- You can use "Monitor and Restart Offline Slaves" plugin: to monitor and restart offline nodes if they are not disconnected manually.
+	Plugins
+		Setting up and using Plugin Manager
+			Dashboard Left Panel -> Manage Jenkins -> Manage Plugins
+			you can install plugin via CLI and the Plugin Manager
+		Finding and configuring required plugins
+			Updates tab – for upgrading plugin already installed
+			Available tab – for downloading available plugin which are not installed.
+			Advanced tab – for uploading plugin hpi/jpi file from local.
+	Jenkins Rest API
+		Using REST API to trigger jobs remotely, access job status, create/delete jobs
+		Trigger a build: curl -X POST http://10.150.18.229:8080/jenkins/view/DevOps/job/MyJob/build --user <USER_NAME>:<TOKEN>
+		Retrieve a Job config.xml file: curl  http://10.150.18.229:8080/jenkins/view/DevOps/job/MyJob/config.xml --user <USER_NAME>:<TOKEN> 
+		Disable a Job: curl -X POST  http://10.150.18.229:8080/jenkins/view/DevOps/job/MyJob/disable --user <USER_NAME>:<TOKEN> 
+		Enable a Job: curl -X POST  http://10.150.18.229:8080/jenkins/view/DevOps/job/MyJob/enable --user <USER_NAME>:<TOKEN> 
+		Delete a Job : curl -X POST  http://10.150.18.229:8080/jenkins/view/DevOps/job/MyJob/doDelete --user <USER_NAME>:<TOKEN>  
+		Create a new Job:curl -s -XPOST 'http://10.150.18.229:8080/createItem?name=yourJobName' --user <USER_NAME>:<TOKEN> --data-binary @config.xml -H "Content-Type:text/xml"
+		Check if job exists:curl -XGET 'http://jenkins/checkJobName?value=yourJobFolderName' --user <USER_NAME>:<TOKEN>
+		*TOKEN - Manage Jenkins ->Manage Users -> click on the users configure button->API Token
+	Security
+		Setting up and using security realms
+			Manage Jenkins -> Configure Global Security
+			- Jenkins own user database
+			- LDAP
+			- Active Directory
+		User database, project security, Matrix security
+			People link shows user list + committers
+			Matrix based security – control privileges granularly using user ids/groups
+			Project based matrix authorization security – Matrix based + set privileges on job configuration page as well
+			Role based matrix authorization security – Manage Roles to control permissions by group. Adds groups/roles tabs to projects
+		Setting up and using auditing
+			Logs- Manage Jenkins -> System Log -> All Jenkins Logs
+			Job Configuration History plugin – for job config history.
+			Audit Trail plugin –This plugin adds an Audit Trail section in the main Jenkins configuration page.
+		Setting up and using credentials
+			Credentials plugin - provides a centralized way to define credentials that can be used by your Jenkins instance, plugins and build jobs.
+			Credentials Binding plugin - allows you to configure your build jobs to inject credentials as environment variables.
+			Global credentials-Credentials that should be available irrespective of domain specification to requirements matching.
+			Credentials -> System ->Add domain
+	Fingerprints
+		Fingerprinting jobs shared or copied between jobs
+		Fingerprint -plugin to Adds the ability to fingerprint files as build steps.
+			$JENKINS_HOME/fingerprints -> where md5sum values are stored.
+	Artifacts
+		Copying artifacts
+			Copy Artifact: plugin Adds a build step to copy artifacts from another project.
+			job -> configure -> Build : Copy artifacts from another project
+		Using artifacts in Jenkins
+			job -> configure -> Post Build Action: archive artifacts
+		Artifact retention policy
+			By default, kept same length of time as build is there.
+			job -> configure -> [x]Discard old builds -> Advanced: set a value for howmany artifacts "Max # of builds to keep with artifacts"	
+	Alerts
+		Making basic updates to jobs and build scripts
+		Troubleshooting specific problems from build and test failure alerts
+			We can use plugin "email-ext" for alerts
 3. Building Continuous Delivery (CD) Pipelines
-	
+	Pipeline Concepts
+		Value stream mapping for CD pipelines
+		Why create a pipeline?
+			Code: Pipelines are implemented in code and typically checked into source control, giving teams the ability to edit, review, and iterate upon their delivery pipeline.
+			Durable: Pipelines can survive both planned and unplanned restarts of the Jenkins master.
+			Pausable: Pipelines can optionally stop and wait for human input or approval before continuing the Pipeline run.
+			Versatile: Pipelines support complex real-world CD requirements, including the ability to fork/join, loop, and perform work in parallel.
+			Extensible: The Pipeline plugin supports custom extensions to its DSL [1] and multiple options for integration with other plugins.
+		Gates within a CD pipeline
+			Provide a point for approval before continuing deployment within stages.
+					
+		How to protect centralized pipelines when multiple groups use same tools
+			You can use approval in jenkins pipeline
+		Definition of binary reuse, automated deployment, multiple environments
+			Binary reuse- shared global library: {Configure System -> Global Pipeline Libraries}
+			automated deployment- in postbuild action you can triiger another project or [x] Build after other projects are built
+			multiple environments-
+		Elements of your ideal CI/CD pipeline - tools
+			Agent
+			Source control repository
+			Binary repository
+			Automated testing
+			Deployment
+		Key concepts in building scripts (including security/password, environment information, etc.)
+			Credentials plugin for password
+			Keep environment information in source control
+			Different script for each stage in the pipeline
+		Upstream and downstream
+			Triggering jobs from other jobs - in postbuild action you can triiger another project or [x] Build after other projects are built
+			Setting up the Parameterized Trigger plugin - In General section of the job "[x]This project is parameterized"
+			Upstream/downstreamjobs- The Upstream job triggers the downstream job, and vice versa.
+		Triggering
+			Triggering Jenkins on code changes:
+				via hooks
+				- Enable "Poll SCM" option and  leave "Schedule" empty
+				- In Github, go to your repo Settings -> Integrations & services->  Add a service -> add service "Jenkins (Git plugin)"
+					Jenkins URL: https://(jenkins_master):8080
+				-Now when you do a git push, it will automatically kick off the build in jenkins
+				*Another way of doing it, using the trigger "GitHub hook trigger for GITScm polling" and in Github, add service called "Jenkins (GitHub plugin)"
+				Add Jenkins hook url: http://(jenkins_master):8080/github-webhook/
+				Test service button in Github services section is useful
+			Difference between push and pull
+				When the source informs the build system of a code change, that’s pushing. -SCM polling trigger job.
+				When the build system asks if there are changes to the source code, that’s pulling. - when hook configure for repo trigger a job.
+			When to use push vs. pull
+				When you don’t have control over SCM polling is used.
+				You want trigger when there is change in SCM.
+		Pipeline (formerly known as “Workflow”)
+			Benefits of Pipeline vs linked jobs
+				CI/CD as code.
+				Changes are tracked.
+				Pausable – can get manual approval
+			Functionalities offered by Pipeline
+				Build steps, pauses, parallelization, deploy, stash/unstash, etc
+				Able to run diff stages in diff env in the same job. 
+			How to use Pipeline
+			Pipeline stage view
+				The Pipeline Stage View plugin includes an extended visualization of Pipeline build history on the index page of a flow project, under Stage View.
+		Folders
+			-you organize Jenkins Projects/Jobs using folder and views.
+			-Nested items determine folder health if you select "child item with worst health"
+			How to control access to items in Jenkins with folders
+				Role Based Access Control can control folder
+				Can control level as current/child/grandchild
+			Referencing jobs in folders
+				http://localhost:8080/job/myfolder/job/JobOne/
+		Parameters
+			Setting up test automation in Jenkins against an uploaded executable
+				Using "File parameter" in Parameterized option you will be able to upload file.  
+			Passing parameters between jobs
+			Identifying parameters and how to use them: file parameter, string parameter
+			Jenkins CLI parameters
+
+				
 4. CD-as-code best practices
