@@ -179,6 +179,15 @@ Certified Jenkins Engineer (CJE)
 			Setting up and running builds in parallel
 				-Use Matrix/Multi Job Configuration 
 				-Build Flow Plugin
+				-Pipeline
+					node {
+						  git "git@github.com..."
+						  parallel (
+						   phase1: { sh "echo p1; sleep 20s; echo phase1" },
+						   phase2: { sh "echo p2; sleep 40s; echo phase2" }
+					      )
+					     sh "run this after both phases complete"   
+						}
 			Setting up and using SSH agents, JNLP agents, cloud agents
 				 Manage Jenkins->  Manage Nodes-> New Node ->Node Name 
 					Then you can configure Launch Method SSH agents/ JNLP agents
@@ -206,8 +215,53 @@ Certified Jenkins Engineer (CJE)
 				Updates tab – for upgrading plugin already installed
 				Available tab – for downloading available plugin which are not installed.
 				Advanced tab – for uploading plugin hpi/jpi file from local.
-
-
-
+		Jenkins Rest API
+			Using REST API to trigger jobs remotely, access job status, create/delete jobs
+			Trigger a build: curl -X POST http://10.150.18.229:8080/jenkins/view/DevOps/job/MyJob/build --user <USER_NAME>:<TOKEN>
+			Retrieve a Job config.xml file: curl  http://10.150.18.229:8080/jenkins/view/DevOps/job/MyJob/config.xml --user <USER_NAME>:<TOKEN> 
+			Disable a Job: curl -X POST  http://10.150.18.229:8080/jenkins/view/DevOps/job/MyJob/disable --user <USER_NAME>:<TOKEN> 
+			Enable a Job: curl -X POST  http://10.150.18.229:8080/jenkins/view/DevOps/job/MyJob/enable --user <USER_NAME>:<TOKEN> 
+			Delete a Job : curl -X POST  http://10.150.18.229:8080/jenkins/view/DevOps/job/MyJob/doDelete --user <USER_NAME>:<TOKEN>  
+			Create a new Job:curl -s -XPOST 'http://10.150.18.229:8080/createItem?name=yourJobName' --user <USER_NAME>:<TOKEN> --data-binary @config.xml -H "Content-Type:text/xml"
+			Check if job exists:curl -XGET 'http://jenkins/checkJobName?value=yourJobFolderName' --user <USER_NAME>:<TOKEN>
+			*TOKEN - Manage Jenkins ->Manage Users -> click on the users configure button->API Token
+		Security
+			Setting up and using security realms
+				Manage Jenkins -> Configure Global Security
+				- Jenkins own user database
+				- LDAP
+				- Active Directory
+			User database, project security, Matrix security
+				People link shows user list + committers
+				Matrix based security – control privileges granularly using user ids/groups
+				Project based matrix authorization security – Matrix based + set privileges on job configuration page as well
+				Role based matrix authorization security – Manage Roles to control permissions by group. Adds groups/roles tabs to projects
+			Setting up and using auditing
+				Logs- Manage Jenkins -> System Log -> All Jenkins Logs
+				Job Configuration History plugin – for job config history.
+				Audit Trail plugin –This plugin adds an Audit Trail section in the main Jenkins configuration page.
+			Setting up and using credentials
+				Credentials plugin - provides a centralized way to define credentials that can be used by your Jenkins instance, plugins and build jobs.
+				Credentials Binding plugin - allows you to configure your build jobs to inject credentials as environment variables.
+				Global credentials-Credentials that should be available irrespective of domain specification to requirements matching.
+				Credentials -> System ->Add domain
+		Fingerprints
+			Fingerprinting jobs shared or copied between jobs
+			Fingerprint -plugin to Adds the ability to fingerprint files as build steps.
+				$JENKINS_HOME/fingerprints -> where md5sum values are stored.
+		Artifacts
+			Copying artifacts
+				Copy Artifact: plugin Adds a build step to copy artifacts from another project.
+				job -> configure -> Build : Copy artifacts from another project
+			Using artifacts in Jenkins
+				job -> configure -> Post Build Action: archive artifacts
+			Artifact retention policy
+				By default, kept same length of time as build is there.
+				job -> configure -> [x]Discard old builds -> Advanced: set a value for howmany artifacts "Max # of builds to keep with artifacts"	
+		Alerts
+			Making basic updates to jobs and build scripts
+			Troubleshooting specific problems from build and test failure alerts
+				We can use plugin "email-ext" for alerts
 3. Building Continuous Delivery (CD) Pipelines
+	
 4. CD-as-code best practices
