@@ -332,8 +332,74 @@ Certified Jenkins Engineer (CJE)
 			Setting up test automation in Jenkins against an uploaded executable
 				Using "File parameter" in Parameterized option you will be able to upload file.  
 			Passing parameters between jobs
+				"Trigger Parameterized  build on other project" in the post build action help you on this.
 			Identifying parameters and how to use them: file parameter, string parameter
+				file parameter: Parameterized option you will be able to upload file
+				string parameter: Help you to pass string parameter to the build.eg: branch name
 			Jenkins CLI parameters
-
-				
+				RUN: java -jar /var/lib/jenkins/jenkins-cli.jar -s http://localhost:8080/
+				To view option: http://localhost:8080/cli/
+				Run command with user name and password: java -jar jenkins-cli.jar -s http://localhost:8080/ safe-restart  --username admin --password admin
+				jenkins-cli who-am-i -> Reports your credential and permissions.
+				jenkins-cli build "Freestyles/My Freestyle Project"
+				jenkins-cli version
+				jenkins-cli shutdown
+				jenkins-cli safe-shutdown
+				jenkins-cli install-plugin thinBackup -restart
+				jenkins-cli console "Freestyle/My Freestyle Project" 51
+		Promotions
+			Promotion of a job
+				stage('Promote Development to Master') {
+					when {
+						branch 'development'
+					}
+			Why promote jobs?
+				plugin allows you to distinguish good builds from bad builds by introducing the notion of 'promotion'.
+			How to use the Promoted Builds plugin
+				Using "when" condition in the stage
+		Notifications
+			How to radiate information on CD pipelines to teams
+				via Email notifications or radiator plugin
+		Pipeline Multibranch and Repository Scanning
+			Usage of Multibranch jobs
+				Suppose in dev branch your team is pushing code always and when the build is success you want to push/promote code to master we can use Multibranch pipeline
+			Scanning GitHub and BitBucket Organization
+			ScanningbasicSCMrepositories
+				pipeline {
+				 triggers {
+					cron(* * * * *')
+					pollSCM('* * * * *')
+				}
+		Pipeline Global Libraries
+			How to share code across Pipelines
+				-library that has methods accessible amongst different projects
+				-extend the functionality of your pipeline
+				-Groovy/pipeline syntax
+				-Put a file "sayHello.groovy" inside jenkins-global-library/vars
+					def call(String name = 'you') {
+						echo "Hello, ${name}"
+					  }
+			Usages of the Shared Libraries
+			Interaction with Folders and Repository scanning
+			Security and Groovy sandbox
 4. CD-as-code best practices
+	Distributed builds architecture
+		Running jobs on slave node
+		Vertical growth – master is responsible for more jobs
+		Horizontal growth – creation of more masters
+	Fungible (replaceable) agents
+		To include the tools' installation as part of the build process is the best practice.
+		Best practice is to make slaves interchangeable, but can tie jobs to slaves
+	Master-agent connectors and protocol
+		SSH connector – preferred option. Slaves need SSHD server and public/private key
+		JNLP/TCP connector – Java Network Launch Protocol start web agent on slave through JWS (Java Web Start). Can start via browser or OS service	JNLP/HTTP connector – like JNLP/TCP except headless and over HTTP
+		Custom script – launch via command line.
+	Tool installations on agents
+		We can install manually on agent/ Jenkins can take care 
+	Cloud agents
+	Traceability
+		Docker Traceability plugin  allows the tracking of the creation of, and use of Docker containers in Jenkins.
+		 Artifacts and packages, Jenkins keep track of those using the fingerprint
+	High availability
+		High Availability plugin eliminates downtime due to master failures.Multiple Jenkins masters act as backups waiting for a primary master failure. Once a failure is detected, a backup master automatically boots up and acts as a failover.
+		$JENKINS_HOME on a shared file system
