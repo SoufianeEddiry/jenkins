@@ -1,15 +1,29 @@
 Certified Jenkins Engineer (CJE)
 ================================
-1. Key CI/CD/Jenkins concepts: Continuous Delivery/Continuous Integration Concepts
-	Define continuous integration, continuous delivery, continuous deployment
-		Countinues Delivery - means that code can be released at any time.
-		Countinues Deployment - means code is released continuously as a  part of an automated pipeline.
-		Continuous Integration – practice of integrating the code continuously/every checkin.
-	Stages of CI and CD
-		Build(Checkout,Compile,Unit Test,Package), Deploy, and Test 
-	What are jobs in Jenkins?
-		Types of jobs - Freestyle, Maven, Pipeline, External Job, Multi Configuratio, Multi Job, Folder, MultiBranch Pipeline 
+1. Key CI/CD/Jenkins concepts: 
+	Continuous Delivery/Continuous Integration Concepts
+		Define continuous integration, continuous delivery, continuous deployment
+			Countinues Delivery - means that code can be released/deployed at any time.
+			Countinues Deployment - means code is released continuously as a  part of an automated pipeline.
+			Continuous Integration – practice of integrating the code continuously/every checkin.
+		Difference between CI and CD
+		
+		Stages of CI and CD
+			Build(Checkout,Compile,Unit Test,Package), Deploy, and Test
+		Continuous delivery versus continuous deployment
+	Jobs
+		What are jobs in Jenkins?
+			A Job is any runnable task that is controlled by Jenkins.
+			The Jenkins official documentation indicates that the term Job has been replaced by the term Project.
+		Types of jobs - Freestyle, Maven, Pipeline, External Job, Multi Configuratio, Multi Job, Folder, MultiBranch Pipeline
+			Freestyle Project- The build step for this type of project normally executes a shell (Linux) or batch (Windows) command. 
+			Pipeline- This type of project used to be called a workflow. These projects are normally written in Jenkins Domain Specific Language (DSL).
+			Multi-Configuration Project- This is for projects that will be tested on multiple environments, and require different configurations, depending on those environments.(like android project, ios, windows).
+			Git-Hub Organization- This type of project can use the source control platform's organization and allow Jenkins to act on Jenkinsfiles stored within the organization’s repositories.
+			Folder- This provides a method to group projects together. This is not technically a project. It acts as a type of directory structure for the projects, and the folder name becomes part of the path of the projects.
+			Multi-Branch Pipeline- In this type of project, Jenkins uses a Jenkinsfile to mark repositories. If a branch is created in that repository, Jenkins will make a new project in Jenkins for that branch.
 		Scope of jobs
+			This includes all of the items that are part of that particular Job / Project. In some cases, there are Global libraries that are brought into the scope of a project simply by being included. Other items that are declared within a project only exist in that project’s scope, and are not available as a shared resource.
 	Builds
 		What are builds in Jenkins?
 			Result of a job(Can be scoped to any typical IT task, defined in Jenkins)
@@ -47,8 +61,8 @@ Certified Jenkins Engineer (CJE)
 		Define unit test, smoke test, acceptance test, automated verification/functional tests
 			unit test- It tests a small piece of functionality, usually at the class method level.
 			smoke test-  aim at ensuring that the most important functions work.
-			acceptance test- It tests against the product specifications.
-			functional tests- It tests the functionality of the project as a whole .
+			acceptance test- It tests against the product specifications.This is the handoff test of the software to the client. This is normally done by the client to ensure that the software meets their expectations.
+			functional/verification tests- It tests the functionality of the project as a whole(does this feauture is working?).
 	Notifications
 		Types of notifications in Jenkins
 			email
@@ -58,11 +72,13 @@ Certified Jenkins Engineer (CJE)
 			Result in fixing/identify the broken code faster.
 	Distributed Builds
 		What are distributed builds?
-			Executing build on slave nodes.
+			Executing build on slave nodes/agents.
 			When you want to preserve resources on the master node you use distributed builds.
+			Master / Agent communication is via SSH ( preferred ) or JNLP ( TCP or HTTP ).
 		Functions of masters and agents
 			Master where you main jenkins server is running.
 			Slave machine are used to execute jenkins jobs.
+			Agents should be ”fungible” ( replaceable ). This means that local configuration on the agent should be kept to a minimum and global configuration on the master should be preferred.
 	Plugins
 		What are plugins?
 			Plugins can really be used to add any functionality to Jenkins.
@@ -86,8 +102,10 @@ Certified Jenkins Engineer (CJE)
 			Jenkins permissions are defined in a matrix-like structure, in which the administrator can set security based on a user or user group.
 			Major categories: overall, Credentials, Agent, Job, Run, View and SCM
 		Definition of auditing, credentials, and other key security concepts
-			auditing: Tracking who did what on your Jenkins server.
+			auditing: Tracking who did what on your Jenkins server.Or verifying that the access permissions are working as intended.
 			credentials: to authenticate user.
+		NOTE: Jenkins is an explicit allow model and that there is no deny; if something is not explicitly allowed then it is denied.
+		Also, Jenkins permissions are additive and global -> parent -> job is how those allows are stacked. If something is allowed at a level above, and inheritance is enabled, then it is allowed in the levels below.
 	Fingerprints
 		What are fingerprints?
 			Fingerprints are an md5sum that is used to track artifacts.
@@ -105,6 +123,7 @@ Certified Jenkins Engineer (CJE)
 			What is the Jenkins Installation Wizard?
 				You can install via repos/docker or running jenkins jar using java
 		How to use the Wizard?
+			
 		Which configurations are covered by the Installation Wizard?
 2.Jenkins usage
 	Jobs
@@ -214,15 +233,21 @@ Certified Jenkins Engineer (CJE)
 			Updates tab – for upgrading plugin already installed
 			Available tab – for downloading available plugin which are not installed.
 			Advanced tab – for uploading plugin hpi/jpi file from local.
+	CI/CD
+		Using Pipeline (formerly known as “Workflow”)
+		Integrating automated deployment
+		Release management process
+		Pipeline stage behavior
 	Jenkins Rest API
 		Using REST API to trigger jobs remotely, access job status, create/delete jobs
 		Trigger a build: curl -X POST http://10.150.18.229:8080/jenkins/view/DevOps/job/MyJob/build --user <USER_NAME>:<TOKEN>
+		Trigger a parameterized build:curl jenkinsurl:8080/jobs/jobname/buildnumber. –user <USER_NAME>:<TOKEN> –data-urlencode json=’{”paramater”: [{“name”:”id”},{ “somevalue”:”abcd”}]}’
 		Retrieve a Job config.xml file: curl  http://10.150.18.229:8080/jenkins/view/DevOps/job/MyJob/config.xml --user <USER_NAME>:<TOKEN> 
 		Disable a Job: curl -X POST  http://10.150.18.229:8080/jenkins/view/DevOps/job/MyJob/disable --user <USER_NAME>:<TOKEN> 
 		Enable a Job: curl -X POST  http://10.150.18.229:8080/jenkins/view/DevOps/job/MyJob/enable --user <USER_NAME>:<TOKEN> 
 		Delete a Job : curl -X POST  http://10.150.18.229:8080/jenkins/view/DevOps/job/MyJob/doDelete --user <USER_NAME>:<TOKEN>  
 		Create a new Job:curl -s -XPOST 'http://10.150.18.229:8080/createItem?name=yourJobName' --user <USER_NAME>:<TOKEN> --data-binary @config.xml -H "Content-Type:text/xml"
-		Check if job exists:curl -XGET 'http://jenkins/checkJobName?value=yourJobFolderName' --user <USER_NAME>:<TOKEN>
+		Check if job exists:curl -X GET 'http://jenkins/checkJobName?value=yourJobFolderName' --user <USER_NAME>:<TOKEN>
 		*TOKEN - Manage Jenkins ->Manage Users -> click on the users configure button->API Token
 	Security
 		Setting up and using security realms
@@ -289,99 +314,99 @@ Certified Jenkins Engineer (CJE)
 			Credentials plugin for password
 			Keep environment information in source control
 			Different script for each stage in the pipeline
-		Upstream and downstream
-			Triggering jobs from other jobs - in postbuild action you can triiger another project or [x] Build after other projects are built
-			Setting up the Parameterized Trigger plugin - In General section of the job "[x]This project is parameterized"
-			Upstream/downstreamjobs- The Upstream job triggers the downstream job, and vice versa.
-		Triggering
-			Triggering Jenkins on code changes:
-				via hooks
-				- Enable "Poll SCM" option and  leave "Schedule" empty
-				- In Github, go to your repo Settings -> Integrations & services->  Add a service -> add service "Jenkins (Git plugin)"
-					Jenkins URL: https://(jenkins_master):8080
-				-Now when you do a git push, it will automatically kick off the build in jenkins
-				*Another way of doing it, using the trigger "GitHub hook trigger for GITScm polling" and in Github, add service called "Jenkins (GitHub plugin)"
-				Add Jenkins hook url: http://(jenkins_master):8080/github-webhook/
-				Test service button in Github services section is useful
-			Difference between push and pull
-				When the source informs the build system of a code change, that’s pushing. -SCM polling trigger job.
-				When the build system asks if there are changes to the source code, that’s pulling. - when hook configure for repo trigger a job.
-			When to use push vs. pull
-				When you don’t have control over SCM polling is used.
-				You want trigger when there is change in SCM.
-		Pipeline (formerly known as “Workflow”)
-			Benefits of Pipeline vs linked jobs
-				CI/CD as code.
-				Changes are tracked.
-				Pausable – can get manual approval
-			Functionalities offered by Pipeline
-				Build steps, pauses, parallelization, deploy, stash/unstash, etc
-				Able to run diff stages in diff env in the same job. 
-			How to use Pipeline
-			Pipeline stage view
-				The Pipeline Stage View plugin includes an extended visualization of Pipeline build history on the index page of a flow project, under Stage View.
-		Folders
-			-you organize Jenkins Projects/Jobs using folder and views.
-			-Nested items determine folder health if you select "child item with worst health"
-			How to control access to items in Jenkins with folders
-				Role Based Access Control can control folder
-				Can control level as current/child/grandchild
-			Referencing jobs in folders
-				http://localhost:8080/job/myfolder/job/JobOne/
-		Parameters
-			Setting up test automation in Jenkins against an uploaded executable
-				Using "File parameter" in Parameterized option you will be able to upload file.  
-			Passing parameters between jobs
-				"Trigger Parameterized  build on other project" in the post build action help you on this.
-			Identifying parameters and how to use them: file parameter, string parameter
-				file parameter: Parameterized option you will be able to upload file
-				string parameter: Help you to pass string parameter to the build.eg: branch name
-			Jenkins CLI parameters
-				RUN: java -jar /var/lib/jenkins/jenkins-cli.jar -s http://localhost:8080/
-				To view option: http://localhost:8080/cli/
-				Run command with user name and password: java -jar jenkins-cli.jar -s http://localhost:8080/ safe-restart  --username admin --password admin
-				jenkins-cli who-am-i -> Reports your credential and permissions.
-				jenkins-cli build "Freestyles/My Freestyle Project"
-				jenkins-cli version
-				jenkins-cli shutdown
-				jenkins-cli safe-shutdown
-				jenkins-cli install-plugin thinBackup -restart
-				jenkins-cli console "Freestyle/My Freestyle Project" 51
-		Promotions
-			Promotion of a job
-				stage('Promote Development to Master') {
-					when {
-						branch 'development'
-					}
-			Why promote jobs?
-				plugin allows you to distinguish good builds from bad builds by introducing the notion of 'promotion'.
-			How to use the Promoted Builds plugin
-				Using "when" condition in the stage
-		Notifications
-			How to radiate information on CD pipelines to teams
-				via Email notifications or radiator plugin
-		Pipeline Multibranch and Repository Scanning
-			Usage of Multibranch jobs
-				Suppose in dev branch your team is pushing code always and when the build is success you want to push/promote code to master we can use Multibranch pipeline
-			Scanning GitHub and BitBucket Organization
-			ScanningbasicSCMrepositories
-				pipeline {
-				 triggers {
-					cron(* * * * *')
-					pollSCM('* * * * *')
+	Upstream and downstream
+		Triggering jobs from other jobs - in postbuild action you can triiger another project or [x] Build after other projects are built
+		Setting up the Parameterized Trigger plugin - In General section of the job "[x]This project is parameterized"
+		Upstream/downstreamjobs- The Upstream job triggers the downstream job, and vice versa.
+	Triggering
+		Triggering Jenkins on code changes:
+			via hooks
+			- Enable "Poll SCM" option and  leave "Schedule" empty
+			- In Github, go to your repo Settings -> Integrations & services->  Add a service -> add service "Jenkins (Git plugin)"
+				Jenkins URL: https://(jenkins_master):8080
+			-Now when you do a git push, it will automatically kick off the build in jenkins
+			*Another way of doing it, using the trigger "GitHub hook trigger for GITScm polling" and in Github, add service called "Jenkins (GitHub plugin)"
+			Add Jenkins hook url: http://(jenkins_master):8080/github-webhook/
+			Test service button in Github services section is useful
+		Difference between push and pull
+			When the source informs the build system of a code change, that’s pushing. -SCM polling trigger job.
+			When the build system asks if there are changes to the source code, that’s pulling. - when hook configure for repo trigger a job.
+		When to use push vs. pull
+			When you don’t have control over SCM polling is used.
+			You want trigger when there is change in SCM.
+	Pipeline (formerly known as “Workflow”)
+		Benefits of Pipeline vs linked jobs
+			CI/CD as code.
+			Changes are tracked.
+			Pausable – can get manual approval
+		Functionalities offered by Pipeline
+			Build steps, pauses, parallelization, deploy, stash/unstash, etc
+			Able to run diff stages in diff env in the same job. 
+		How to use Pipeline
+		Pipeline stage view
+			The Pipeline Stage View plugin includes an extended visualization of Pipeline build history on the index page of a flow project, under Stage View.
+	Folders
+		-you organize Jenkins Projects/Jobs using folder and views.
+		-Nested items determine folder health if you select "child item with worst health"
+		How to control access to items in Jenkins with folders
+			Role Based Access Control can control folder
+			Can control level as current/child/grandchild
+		Referencing jobs in folders
+			http://localhost:8080/job/myfolder/job/JobOne/
+	Parameters
+		Setting up test automation in Jenkins against an uploaded executable
+			Using "File parameter" in Parameterized option you will be able to upload file.  
+		Passing parameters between jobs
+			"Trigger Parameterized  build on other project" in the post build action help you on this.
+		Identifying parameters and how to use them: file parameter, string parameter
+			file parameter: Parameterized option you will be able to upload file
+			string parameter: Help you to pass string parameter to the build.eg: branch name
+		Jenkins CLI parameters
+			RUN: java -jar /var/lib/jenkins/jenkins-cli.jar -s http://localhost:8080/
+			To view option: http://localhost:8080/cli/
+			Run command with user name and password: java -jar jenkins-cli.jar -s http://localhost:8080/ safe-restart  --username admin --password admin
+			jenkins-cli who-am-i -> Reports your credential and permissions.
+			jenkins-cli build "Freestyles/My Freestyle Project"
+			jenkins-cli version
+			jenkins-cli shutdown
+			jenkins-cli safe-shutdown
+			jenkins-cli install-plugin thinBackup -restart
+			jenkins-cli console "Freestyle/My Freestyle Project" 51
+	Promotions
+		Promotion of a job
+			stage('Promote Development to Master') {
+				when {
+					branch 'development'
 				}
-		Pipeline Global Libraries
-			How to share code across Pipelines
-				-library that has methods accessible amongst different projects
-				-extend the functionality of your pipeline
-				-Groovy/pipeline syntax
-				-Put a file "sayHello.groovy" inside jenkins-global-library/vars
-					def call(String name = 'you') {
-						echo "Hello, ${name}"
-					  }
-			Usages of the Shared Libraries
-			Interaction with Folders and Repository scanning
-			Security and Groovy sandbox
+		Why promote jobs?
+				plugin allows you to distinguish good builds from bad builds by introducing the notion of 'promotion'.
+		How to use the Promoted Builds plugin
+			Using "when" condition in the stage
+	Notifications
+		How to radiate information on CD pipelines to teams
+			via Email notifications or radiator plugin
+	Pipeline Multibranch and Repository Scanning
+		Usage of Multibranch jobs
+			Suppose in dev branch your team is pushing code always and when the build is success you want to push/promote code to master we can use Multibranch pipeline
+		Scanning GitHub and BitBucket Organization
+		ScanningbasicSCMrepositories
+			pipeline {
+			 triggers {
+				cron(* * * * *')
+				pollSCM('* * * * *')
+			}
+	Pipeline Global Libraries
+		How to share code across Pipelines
+			-library that has methods accessible amongst different projects
+			-extend the functionality of your pipeline
+			-Groovy/pipeline syntax
+			-Put a file "sayHello.groovy" inside jenkins-global-library/vars
+				def call(String name = 'you') {
+					echo "Hello, ${name}"
+				  }
+		Usages of the Shared Libraries
+		Interaction with Folders and Repository scanning
+		Security and Groovy sandbox
 4. CD-as-code best practices
 	Distributed builds architecture
 		Running jobs on slave node
@@ -402,4 +427,4 @@ Certified Jenkins Engineer (CJE)
 		 Artifacts and packages, Jenkins keep track of those using the fingerprint
 	High availability
 		High Availability plugin eliminates downtime due to master failures.Multiple Jenkins masters act as backups waiting for a primary master failure. Once a failure is detected, a backup master automatically boots up and acts as a failover.
-		$JENKINS_HOME on a shared file system
+		$JENKINS_HOME on a shared file system	
