@@ -1,0 +1,15 @@
+Go To Git hub and create a token
+	Profile -> Settings -> Developer Settings -> Personal Access Token -> Create New Token
+
+Jenkins
+	Manage Jenkins -> Configure system
+		GitHub -> GitHub Servers
+			API URL: https://api.github.com
+			Credentials: -> ADD -> Jenkins Credentials Provider -> Kind: Secret Text, Secret: <TOKEN> , ID: <SomeID>
+In Job
+	General
+		[x] GitHub project
+			Project URL: <https://<URL>
+	Build Triggers
+		[x] GitHub hook trigger for GitScm Polling
+	NOTE: Under Source Code Management there will be Repository URL
