@@ -1,0 +1,33 @@
+1. Login to jenkins master Node CLI
+	Enable shell for jenkins user by editing /etc/passwd
+		/bin/false -> /bin/bash
+	Switch to jenkins user and create an ssh-key
+		]# su jenkins
+		]$ ssh-keygen -t rsa
+2. Now login to Slave Node
+	Create a user <jenkins> and set-password
+		]#useradd jenkins
+		]#passwd jenkins	
+	Set user as root user
+		]#visudo
+			jenkins ALL=(ALL)       NOPASSWD: ALL
+3. Login to Jenkins Master and copy key
+	Switch to jenkins user first
+		]#su jenkins
+	Copy key
+		]#ssh-copy-id  jenkins@<IP>
+4. Login to jenkins Console and add slave
+	Manage Jenkins -> Manage Node -> New Node
+		Node name: MySlaveNode1 and click OK
+		Now in the configuration page will appear 
+			Remote root directory	: /home/jenkins (Make sure the user have permission to this folder)
+			Labels: MySlaveNode1
+			Host: <Slave-Node-IP>
+			Credentials: ADD -> Jenkins
+				Kind: SSH userName with private key
+				Priveykey: <PASTE whats there in Master NODE jenkins User file .ssh/id_rsa>
+At Job side
+	[x] Restrict where this project can be run	
+			Label Expression: <Slave-Label> 
+
+NOTE: Make sure nesessary packages are installed like git/maven/ant
