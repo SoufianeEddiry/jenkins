@@ -13,3 +13,7 @@ In Job
 	Build Triggers
 		[x] GitHub hook trigger for GitScm Polling
 	NOTE: Under Source Code Management there will be Repository URL
+
+To Confirm the webhook is enabled
+	Go To Git hub
+	Profile -> Settings -> Webhooks
