@@ -1,0 +1,8 @@
+1. Login to Jenkins CLI
+	switch to the jenkins user(who going to use git)
+	Generate an ssh key pair
+	]#ssh-keygen -t rsa
+2. Copy the id_rsa.pub to github
+	]#cat ~/.ssh/id_rsa.pub
+	github.com
+		Settings -> SSH and GPG Keys -> New SSH key -> Paste the key -> Add the key
