@@ -1,0 +1,6 @@
+Jenkins Plugin: Kubernetes Continuos Deploy
+
+Credentials -> Global -> Add Credentials
+	Kind: Kubernetes Configuration
+	ID: <mykubeconfig> //will be referencing in pipeline
+	kubeconfig: <paste the content of ~/.kube/config in master node of k8s/place the file on jenkins>

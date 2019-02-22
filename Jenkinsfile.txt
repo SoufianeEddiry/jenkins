@@ -1,0 +1,81 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Running Build'
+                archiveArtifacts artifacts: 'target/mypackage.zip'
+            }
+        }
+        stage('DeployToStaging') {
+            when {
+                branch 'stage'
+            }
+            steps {
+				//Credentials set by: Credentials -> Stores scoped to jenkins: Jenkins -> Global Credentials -> Add Credentials
+				//Username Password Type - ID: StageWebserverLogin
+                withCredentials([usernamePassword(credentialsId: 'StageWebserverLogin', usernameVariable: 'USERNAME', passwordVariable: 'USERPASS')]) {
+                    sshPublisher(
+                        failOnError: true,
+                        continueOnError: false,
+                        publishers: [
+							//IP address detail are configured by: Manage Jenkins -> configure system -> Publish over ssh -> SSH Server
+							// Name: staging, Hostname: <IP>
+                            sshPublisherDesc(
+                                configName: 'staging',
+                                sshCredentials: [
+                                    username: "$USERNAME",
+                                    encryptedPassphrase: "$USERPASS"
+                                ], 
+                                transfers: [
+                                    sshTransfer(
+                                        sourceFiles: 'target/mypackage.tar.gz',
+                                        removePrefix: 'target/',
+                                        remoteDirectory: '/tmp',
+                                        execCommand: 'tar -xvzf /tmp/mypackage.tar.gz -d /opt/mypackage && sudo /usr/bin/systemctl start myapp'
+                                    )
+                                ]
+                            )
+                        ]
+                    )
+                }
+            }
+        }
+        stage('DeployToProduction') {
+            when {
+                branch 'master'
+            }
+            steps {
+				timeout(time:5, unit:'DAYS') {
+					input 'Approve for prod Deployment', submitter: 'it-ops'
+				}
+                milestone(1)
+				//Credentials set by: Credentials -> Stores scoped to jenkins: Jenkins -> Global Credentials -> Add Credentials
+				//Username Password Type - ID: ProdWebserverLogin
+                withCredentials([usernamePassword(credentialsId: 'ProdWebserverLogin', usernameVariable: 'USERNAME', passwordVariable: 'USERPASS')]) {
+                    sshPublisher(
+                        failOnError: true,
+                        continueOnError: false,
+                        publishers: [
+                            sshPublisherDesc(
+                                configName: 'production',
+                                sshCredentials: [
+                                    username: "$USERNAME",
+                                    encryptedPassphrase: "$USERPASS"
+                                ], 
+                                transfers: [
+                                    sshTransfer(
+                                        sourceFiles: 'target/mypackage.tar.gz',
+                                        removePrefix: 'target/',
+                                        remoteDirectory: '/tmp',
+                                        execCommand: 'tar -xvzf /tmp/mypackage.tar.gz -d /opt/mypackage && sudo /usr/bin/systemctl start myapp'
+                                    )
+                                ]
+                            )
+                        ]
+                    )
+                }
+            }
+        }
+    }
+}
